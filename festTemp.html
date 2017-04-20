@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset='utf-8' />
+<title>Find Music Festivals</title>
+<meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+<script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.34.0/mapbox-gl.js'></script>
+<link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.34.0/mapbox-gl.css' rel='stylesheet' />
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"/>
+<!-- Latest compiled and minified CSS BOOTSTRAP-->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<!-- jQuery library BOOTSTRAP-->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+<!-- Latest compiled JavaScript BOOTSTRAP-->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Sigmar One">
+<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Oswald">
+
+
+<link rel="stylesheet" type="text/css" href="css/bootstrap-datepicker.min.css">
+<!-- Minified Datepicker JS -->
+<script src="js/bootstrap-datepicker.min.js"></script>
+<!-- JS for document -->
+<script type='text/javascript' src="js/script.js"></script>
+
+<style>
+
+body{
+	background-color: #2F4F65;
+}
+
+.page-header{
+	color: #F2FA57;
+	border-bottom-width: 3px;
+	font-family: Sigmar One;
+	border-bottom-color: #D4844E;
+	
+}
+.jumbotron{
+	background-color:  #F2FA57;
+    border-style: solid;
+    border-width: 2px;
+	font-family: Oswald;
+}
+
+.table{
+	font-family: Oswald;
+	color: #D4844E;
+}
+
+#map{
+    border-style: solid;
+    border-width: 2px;
+	height: 350px;
+}
+#search-button{
+	opacity: 0.8;
+}
+</style>
+	
+</head>
+<body>
+<div class="container-fluid">
+	<div class="page-header">
+			<h2 class="text-center" style="font-size: 3em;">FIND YOUR FESTIVAL!</h2>
+	</div>
+	<div class="jumbotron">
+		<div class="row">
+			<div class="col-lg-3 col-mid-4 col-sm-4 col-xs-12" style="padding-top:50px;">
+				<p style="font-size: 15px; color: gray;">Choose criteria below to search for festivals</p>
+				<div class="input-group" style="width: 100%">
+					<input id='band-search' type="text" class="form-control" placeholder="Search by Band">
+				</div>
+				<div class="input-group" style="padding-top:20px; width: 100%">
+					<input id='zip-search' type="text" class="form-control" placeholder="Search by Zip">
+				</div>
+				<div class="input-daterange input-group" id="datepicker" style="padding-top:20px;">
+					<input id='start-date-search'type="text" class="form-control" placeholder="mm/dd/yy" name="start" />
+					<span style="color: #2F4F65;" class="input-group-addon">to</span>
+					<input id='end-date-search'type="text" class="form-control" placeholder="mm/dd/yy" name="end" />
+				</div>
+				<div class="input-group" style="padding-top:20px; padding-bottom: 30px; margin:auto;">
+						<button id='search-button' class="btn btn-default" style="color: #2F4F65; background-color:#D4844E; width: 100px;" type="button">Search</button>
+				</div>
+			</div>
+			<div class="col-lg-9 col-mid-8 col-sm-8 col-xs-12">
+				<div id='map'></div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+
+<script>
+
+
+$(document).ready(function() {
+	mapboxgl.accessToken = 'pk.eyJ1IjoibGFyb2JlcnRzMiIsImEiOiJjajB5MXp5MGcwMXExMnFxZHh0dnE3NHJ5In0.PVynsiXplfPuQG5DLsF14g';
+	var map = new mapboxgl.Map({
+	    container: 'map', // container id
+	    style: 'mapbox://styles/laroberts2/cj0y98x3000en2rntgs8c2orb', //hosted style id
+	    center: [-96, 37.8], // starting position
+	    zoom: 2 // starting zoom
+	});
+
+	$('.input-daterange').datepicker({
+	    autoclose: true,
+	    todayHighlight: true
+	});
+
+	$('#search-button').mouseenter(function() {
+        $('#search-button').fadeTo('fast', 1);
+    });
+        $('#search-button').mouseleave(function() {
+        $('#search-button').fadeTo('fast', .8);
+    });
+	$('#search-button').click(function() {
+		//values from the search buttons
+		var artist = $("#band-search").val();
+		var zip = $("#zip-search").val();
+		var startDate = $("#start-date-search").val();
+		var endDate = $("#end-date-search").val();
+		
+		//retruned GEOJSON from  API call... currently dummy data
+		var festivalReturn =[{
+	        "type": "Feature",
+	        "properties": {
+	        	"description": "<strong>Make it Mount Pleasant</strong><p><a href=\"http://www.mtpleasantdc.com/makeitmtpleasant\" target=\"_blank\" title=\"Opens in a new window\">Make it Mount Pleasant</a> is a handmade and vintage market and afternoon of live entertainment and kids activities. 12:00-6:00 p.m.</p>"},
+	        "geometry": {
+	            "type": "Point",
+	            "coordinates": [-77.03238901390978, 38.913188059745586]
+	        },
+	        "properties": {
+	            "title": "Mapbox DC"
+	        }
+	    }, {
+	        "type": "Feature",
+			"properties": {
+	        	"description": "<strong>Make it Mount Pleasant</strong><p><a href=\"http://www.mtpleasantdc.com/makeitmtpleasant\" target=\"_blank\" title=\"Opens in a new window\">Make it Mount Pleasant</a> is a handmade and vintage market and afternoon of live entertainment and kids activities. 12:00-6:00 p.m.</p>"},
+	        "geometry": {
+	            "type": "Point",
+	            "coordinates": [-122.414, 37.776]
+	        },
+	        "properties": {
+	            "title": "Mapbox SF"
+	        }
+	    }]
+		
+		//this is the template festivalReturn is plugged into
+		var festivalDisplay = {
+	        id: "unclustered-point",
+	        type: "circle",
+	        source: {
+	            "type": "geojson",
+	            "data": {
+	                "type": "FeatureCollection",
+	                "features": festivalReturn
+	            }
+	        },
+	        paint: {
+	            "circle-color": "#11b4da",
+	            "circle-radius": 8,
+	            "circle-stroke-width": 1,
+	            "circle-stroke-color": "#fff"
+	        }
+		}
+		
+
+	    //adds layers to the map based on features in festivalReturn
+		map.addLayer(festivalDisplay);
+
+		//creates the bounding box and zooms to it in the map
+		var longMin = 1000;
+		var longMax = -1000;
+		var latMin = 1000;
+		var latMax = -1000;
+
+		for(i = 0; i < festivalReturn.length; i++) {
+			if(festivalReturn[i].geometry.coordinates[0] < longMin){
+				longMin = festivalReturn[i].geometry.coordinates[0];
+			}
+			else {
+				longMin = longMin;
+			};
+
+			if(festivalReturn[i].geometry.coordinates[1] < latMin){
+				latMin = festivalReturn[i].geometry.coordinates[1];
+			}
+			else {
+				latMin = latMin;
+			};
+
+			if(festivalReturn[i].geometry.coordinates[0] > longMax){
+				longMax = festivalReturn[i].geometry.coordinates[0];
+			}
+			else {
+				longMax = longMax;
+			};
+
+			if(festivalReturn[i].geometry.coordinates[1] > latMax){
+				latMax = festivalReturn[i].geometry.coordinates[1];
+			}
+			else {
+				latMax = latMax;
+			};
+		
+		};
+		
+		map.fitBounds([[longMin,latMin],[longMax,latMax]],{padding:50});
+	
+	});
+});
+
+//captures values in searches and populates points on map
+
+
+
+
+</script>
+
+</body>
+</html>
