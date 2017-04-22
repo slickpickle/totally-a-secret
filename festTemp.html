@@ -56,6 +56,13 @@ body{
 #search-button{
 	opacity: 0.8;
 }
+#festivalTable{
+	background-color: #D4844E;
+	padding-left:30px;
+	border-radius:5px;
+	color:#F2FA57;
+}
+
 </style>
 	
 </head>
@@ -87,6 +94,24 @@ body{
 				<div id='map'></div>
 			</div>
 		</div>
+	</div>
+	<div id='festivalTableContainer' class='row' style="margin-bottom:20px;">
+		<!--<div id="festivalTable" class="col-lg-10 col-mid-10 col-sm-10 col-xs-12 col-lg-offset-1 col-mid-offset-1 col-sm-offset-1" style="margin-top:10px;">
+			<div class="col-lg-3 col-mid-3 col-sm-3 col-xs-3">
+				<h3 style="padding-bottom:10px;"><a href=# style="color:#2F4F65;">Coachella</a></h3>
+			</div>
+			<div style="padding-top:15px;" class="col-lg-3 col-mid-3 col-sm-3 col-xs-3">
+				<h4>Indio, CA</h4>
+			</div>
+		</div>
+		<div id='festivalTable' class="col-lg-10 col-mid-10 col-sm-10 col-xs-12 col-lg-offset-1 col-mid-offset-1 col-sm-offset-1" style="margin-top:10px;">
+			<div class="col-lg-3 col-mid-3 col-sm-3 col-xs-3">
+				<h3 style="padding-bottom:10px;"><a href=# style="color:#2F4F65;">Sasquatch</a></h3>
+			</div>
+			<div style="padding-top:15px;" class="col-lg-3 col-mid-3 col-sm-3 col-xs-3">
+				<h4>George, WA</h4>
+			</div>
+		</div>-->
 	</div>
 </div>
 
@@ -127,24 +152,22 @@ $(document).ready(function() {
 		var festivalReturn =[{
 	        "type": "Feature",
 	        "properties": {
+	        	"name": "East Coast Festival",
+	        	"city": "Indio, CA",
 	        	"description": "<strong>Make it Mount Pleasant</strong><p><a href=\"http://www.mtpleasantdc.com/makeitmtpleasant\" target=\"_blank\" title=\"Opens in a new window\">Make it Mount Pleasant</a> is a handmade and vintage market and afternoon of live entertainment and kids activities. 12:00-6:00 p.m.</p>"},
 	        "geometry": {
 	            "type": "Point",
-	            "coordinates": [-77.03238901390978, 38.913188059745586]
-	        },
-	        "properties": {
-	            "title": "Mapbox DC"
+	            "coordinates": [-119.9957289, 47.1013746]
 	        }
 	    }, {
 	        "type": "Feature",
 			"properties": {
+				"name": "Coachella",
+				"city": "Indio, CA",
 	        	"description": "<strong>Make it Mount Pleasant</strong><p><a href=\"http://www.mtpleasantdc.com/makeitmtpleasant\" target=\"_blank\" title=\"Opens in a new window\">Make it Mount Pleasant</a> is a handmade and vintage market and afternoon of live entertainment and kids activities. 12:00-6:00 p.m.</p>"},
 	        "geometry": {
 	            "type": "Point",
-	            "coordinates": [-122.414, 37.776]
-	        },
-	        "properties": {
-	            "title": "Mapbox SF"
+	            "coordinates": [-116.2382135, 33.6826141]
 	        }
 	    }]
 		
@@ -209,6 +232,17 @@ $(document).ready(function() {
 		};
 		
 		map.fitBounds([[longMin,latMin],[longMax,latMax]],{padding:50});
+
+		//adds divs to bottom of page with info
+		var festName = "";
+		var festCity = "";
+
+		for(i = 0; i < festivalReturn.length; i++) {
+				festCity = festivalReturn[i].properties.city;
+				festName = festivalReturn[i].properties.name;
+				$('#festivalTableContainer').append('<div id="festivalTable" class="col-lg-10 col-mid-10 col-sm-10 col-xs-12 col-lg-offset-1 col-mid-offset-1 col-sm-offset-1" style="margin-top:10px;"><div class="col-lg-3 col-mid-3 col-sm-3 col-xs-3"><h3 style="padding-bottom:10px;"><a href=# style="color:#2F4F65;">'+ festName + '</a></h3></div><div style="padding-top:15px;" class="col-lg-3 col-mid-3 col-sm-3 col-xs-3"><h4>' + festCity + '</h4></div></div>')
+		
+		};
 	
 	});
 });
