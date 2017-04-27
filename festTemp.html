@@ -118,6 +118,7 @@ body{
 			</div>
 		</div>-->
 	</div>
+	<div id="test"></div>
 </div>
 
 
@@ -153,35 +154,24 @@ $(document).ready(function() {
 		var startDate = $("#start-date-search").val();
 		var endDate = $("#end-date-search").val();
 		
+		var festivalReturn;
+		
+		// Make API call to populate festivalReturn. Need to set async to false otherwise the function runs before the variable is initialized
+		$.ajax({
+			url: "https://pacific-thicket-87363.herokuapp.com/festivals?artist=Chance the Rapper",
+			async: false,
+			dataType: 'json',
+			success: function(data) {
+				festivalReturn = data;
+			}
+		});
+		
+		console.log(festivalReturn);
+		
 		//retruned GEOJSON from  API call... currently dummy data
-		var festivalReturn =[{
-	        "type": "Feature",
-	        "properties": {
-	        	"name": "Sasquatch",
-	        	"city": "George, WA"},
-	        "geometry": {
-	            "type": "Point",
-	            "coordinates": [-119.9957289, 47.1013746]
-	        }
-	    },{
-	        "type": "Feature",
-	        "properties": {
-	        	"name": "Dumbtown",
-	        	"city": "Stupidville, SW"},
-	        "geometry": {
-	            "type": "Point",
-	            "coordinates": [-119.98, 47.2013746]
-	        }
-	    }, {
-	        "type": "Feature",
-			"properties": {
-				"name": "Coachella",
-				"city": "Indio, CA"},
-	        "geometry": {
-	            "type": "Point",
-	            "coordinates": [-116.2382135, 33.6826141]
-	        }
-	    }]
+		
+		
+	//$.get( "test.php", { name: "John", time: "2pm" } );
 		
 		//this is the template festivalReturn is plugged into
 		var festivalDisplay = {
@@ -189,10 +179,7 @@ $(document).ready(function() {
 	        type: "circle",
 	        source: {
 	            "type": "geojson",
-	            "data": {
-	                "type": "FeatureCollection",
-	                "features": festivalReturn
-	            }
+	            "data": festivalReturn
 	        },
 	        paint: {
 	            "circle-color": "#11b4da",
@@ -209,8 +196,8 @@ $(document).ready(function() {
 		//creates the bounding box and zooms to it in the map
 		var longMin = 1000;
 		var longMax = -1000;
-		var latMin = 1000;
-		var latMax = -1000;
+		var latMin = 90; // Updated to true min
+		var latMax = -90; // Updated to true max
 
 		for(i = 0; i < festivalReturn.length; i++) {
 			if(festivalReturn[i].geometry.coordinates[0] < longMin){
